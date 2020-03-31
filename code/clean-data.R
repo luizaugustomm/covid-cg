@@ -39,7 +39,7 @@ print(setdiff(bairros_cg, bairros_idosos))
 write_csv(x = idosos_cad, path = here('data/idosos_cad_bairros.csv'))
 
 # Save CG's neighborhoods without accents
-topojson_write(input = cg, file = here('data/cg_all.json'))
+topojson_write(input = cg, file = here('data/cg_all.json'), object_name = 'setores')
 
 # Save CG's urban area only
 topojson_write(input = cg %>% filter(TIPO == 'URBANO'), file = here('data/cg.json'))
