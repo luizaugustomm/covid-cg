@@ -5,6 +5,7 @@
 library(geojsonio)
 library(dplyr)
 library(readr)
+library(stringr)
 library(here)
 library(stringi)
 
@@ -15,10 +16,15 @@ cg = topojson_read(here('data/raw_cg.json')) %>%
                NM_BAIRRO == 'JARDIM QUARENTA' ~ 'QUARENTA',
                NM_BAIRRO == '' ~ 'AREA RURAL',
                TRUE ~ as.character(NM_BAIRRO)
-           ))
+           )) %>%
+    select(-id, -ID) %>%
+    rename_at(vars(starts_with('NM_')), funs(str_remove(., 'NM_'))) %>%
+    rename_all(funs(str_to_lower(.)))
 
 idosos_cad = read_csv(here('data/raw_idosos_cad_bairros.csv')) %>%
-    mutate(BAIRRO = stri_trans_general(BAIRRO, id = "Latin-ASCII"))
+    mutate(BAIRRO = stri_trans_general(BAIRRO, id = "Latin-ASCII")) %>%
+    rename_all(funs(str_to_lower(.))) %>%
+    rename_all(funs(str_replace(., ' ', '_')))
 
 bairros_idosos = idosos_cad %>% pull(BAIRRO) %>% unique()
 bairros_cg = cg %>% pull(NM_BAIRRO) %>% unique()
