@@ -9,6 +9,8 @@ library(stringr)
 library(here)
 library(stringi)
 
+rm(list = ls())
+
 cg = topojson_read(here('data/raw_cg.json')) %>%
     mutate(NM_BAIRRO = stri_trans_general(NM_BAIRRO, id = 'Latin-ASCII'),
            NM_BAIRRO = case_when(
@@ -35,8 +37,20 @@ print(setdiff(bairros_idosos, bairros_cg))
 # Neighborhoods in CG but not in CAD
 print(setdiff(bairros_cg, bairros_idosos))
 
+prop_idosos_bairros = cg %>%
+    select(bairro, populacao) %>%
+    as_tibble() %>%
+    group_by(bairro) %>%
+    summarise(populacao_bairro = sum(as.integer(as.character(populacao)), na.rm = T)) %>%
+    merge(idosos_cad) %>%
+    group_by(bairro) %>%
+    mutate(proporcao_idosos = qtd_idosos / populacao_bairro)
+
 # Save CAD's neighborhoods without accents
 write_csv(x = idosos_cad, path = here('data/idosos_cad_bairros.csv'))
+
+# Save percentage of elderly
+write_csv(x = prop_idosos_bairros, path = here('data/prop_idosos_bairros.csv'))
 
 # Save CG's neighborhoods without accents
 topojson_write(input = cg, file = here('data/cg_all.json'), object_name = 'setores')
