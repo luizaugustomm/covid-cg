@@ -26,8 +26,8 @@ idosos_cad = read_csv(here('data/raw_idosos_cad_bairros.csv')) %>%
     rename_all(funs(str_to_lower(.))) %>%
     rename_all(funs(str_replace(., ' ', '_')))
 
-bairros_idosos = idosos_cad %>% pull(BAIRRO) %>% unique()
-bairros_cg = cg %>% pull(NM_BAIRRO) %>% unique()
+bairros_idosos = idosos_cad %>% pull(bairro) %>% unique()
+bairros_cg = cg %>% pull(bairro) %>% unique()
 
 # Neighborhoods in CAD but not in CG
 print(setdiff(bairros_idosos, bairros_cg))
@@ -42,4 +42,4 @@ write_csv(x = idosos_cad, path = here('data/idosos_cad_bairros.csv'))
 topojson_write(input = cg, file = here('data/cg_all.json'), object_name = 'setores')
 
 # Save CG's urban area only
-topojson_write(input = cg %>% filter(TIPO == 'URBANO'), file = here('data/cg.json'))
+topojson_write(input = cg %>% filter(tipo == 'URBANO'), file = here('data/cg.json'), object_name = 'setores')
