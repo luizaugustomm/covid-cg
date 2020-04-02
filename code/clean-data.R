@@ -38,10 +38,11 @@ print(setdiff(bairros_idosos, bairros_cg))
 print(setdiff(bairros_cg, bairros_idosos))
 
 prop_idosos_bairros = cg %>%
-    select(bairro, populacao) %>%
+    select(bairro, populacao, densidade) %>%
     as_tibble() %>%
     group_by(bairro) %>%
-    summarise(populacao_bairro = sum(as.integer(as.character(populacao)), na.rm = T)) %>%
+    summarise(populacao_bairro = sum(as.integer(as.character(populacao)), na.rm = T),
+              densidade_bairro = mean(as.integer(as.character(densidade)), na.rm = T)) %>%
     merge(idosos_cad) %>%
     group_by(bairro) %>%
     mutate(proporcao_idosos = qtd_idosos / populacao_bairro)
