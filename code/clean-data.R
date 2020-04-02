@@ -42,7 +42,8 @@ prop_idosos_bairros = cg %>%
     as_tibble() %>%
     group_by(bairro) %>%
     summarise(populacao_bairro = sum(as.integer(as.character(populacao)), na.rm = T),
-              densidade_bairro = mean(as.integer(as.character(densidade)), na.rm = T)) %>%
+              densidade_media_bairro = mean(as.integer(as.character(densidade)), na.rm = T),
+              densidade_mediana_bairro = median(as.integer(as.character(densidade)), na.rm = T)) %>%
     merge(idosos_cad) %>%
     group_by(bairro) %>%
     mutate(proporcao_idosos = qtd_idosos / populacao_bairro)
